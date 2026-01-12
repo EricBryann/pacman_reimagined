@@ -1,0 +1,71 @@
+// ========================================
+// UI ELEMENTS & EVENT HANDLERS
+// ========================================
+
+// UI Element References
+const startScreen = document.getElementById('start-screen');
+const gameOverScreen = document.getElementById('game-over-screen');
+const playButton = document.getElementById('play-button');
+const restartButton = document.getElementById('restart-button');
+const playerNameInput = document.getElementById('player-name');
+const scoreDisplay = document.getElementById('score');
+const leaderboardList = document.getElementById('leaderboard-list');
+const finalScoreDisplay = document.getElementById('final-score');
+const survivalTimeDisplay = document.getElementById('survival-time');
+const cellsEatenDisplay = document.getElementById('cells-eaten');
+const quitBtn = document.getElementById('quit-btn');
+
+// ========================================
+// GAME START/RESTART
+// ========================================
+
+function startGame() {
+    const name = playerNameInput.value.trim() || 'Player';
+    startScreen.style.display = 'none';
+    gameOverScreen.classList.add('hidden');
+    initGame(name);
+    gameLoop();
+}
+
+// ========================================
+// EVENT LISTENERS
+// ========================================
+
+// Play buttons
+playButton.addEventListener('click', startGame);
+restartButton.addEventListener('click', startGame);
+
+// Enter key to start
+playerNameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') startGame();
+});
+
+// Quit button
+quitBtn.addEventListener('click', () => {
+    if (confirm('Are you sure you want to quit?')) {
+        gameState.running = false;
+        quitBtn.classList.remove('visible');
+        startScreen.style.display = 'flex';
+    }
+});
+
+// Mouse movement
+canvas.addEventListener('mousemove', (e) => {
+    gameState.mouse.x = e.clientX;
+    gameState.mouse.y = e.clientY;
+});
+
+// Touch support for mobile
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    gameState.mouse.x = e.touches[0].clientX;
+    gameState.mouse.y = e.touches[0].clientY;
+});
+
+// ========================================
+// INITIALIZATION
+// ========================================
+
+// Focus on name input when page loads
+playerNameInput.focus();
+

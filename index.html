@@ -3,42 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agar Clone - Single Player</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>PACMAN REIMAGINED</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div id="game-container">
+        <!-- Game Canvas -->
         <canvas id="gameCanvas"></canvas>
         
+        <!-- UI Overlay -->
         <div id="ui-overlay">
+            <!-- Quit Button -->
+            <button id="quit-btn">✕ QUIT</button>
+            
+            <!-- Score Display -->
             <div id="score-container">
                 <div id="score-label">MASS</div>
                 <div id="score">10</div>
             </div>
+            
+            <!-- Leaderboard -->
             <div id="leaderboard">
                 <div id="leaderboard-title">LEADERBOARD</div>
                 <div id="leaderboard-list"></div>
             </div>
-            <button id="quit-btn">✕ QUIT</button>
         </div>
         
+        <!-- Start Screen -->
         <div id="start-screen">
             <div id="title-container">
-                <h1 id="game-title">AGAR</h1>
-                <div id="subtitle">SOLO EDITION</div>
+                <h1 id="game-title">PACMAN</h1>
+                <p id="subtitle">EAT OR BE EATEN</p>
             </div>
-            <input type="text" id="player-name" placeholder="Enter your name" maxlength="15">
+            <input type="text" id="player-name" placeholder="Enter your name..." maxlength="15">
             <button id="play-button">PLAY</button>
             <div id="instructions">
-                <p>🖱️ Move mouse to control direction</p>
+                <p>🖱️ Move your mouse to control your cell</p>
                 <p>🍎 Eat food and smaller cells to grow</p>
-                <p>⚠️ Avoid bigger cells or get eaten!</p>
+                <p>⚠️ Avoid larger cells or be consumed!</p>
             </div>
         </div>
         
+        <!-- Game Over Screen -->
         <div id="game-over-screen" class="hidden">
-            <h2>GAME OVER</h2>
+            <h2>EATEN!</h2>
             <div id="final-stats">
                 <p>Final Mass: <span id="final-score">0</span></p>
                 <p>Time Survived: <span id="survival-time">0:00</span></p>
@@ -47,8 +62,15 @@
             <button id="restart-button">PLAY AGAIN</button>
         </div>
     </div>
-    
-    <script src="game.js"></script>
+
+    <!-- Game Scripts (load in order) -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/entities/Cell.js"></script>
+    <script src="js/entities/AICell.js"></script>
+    <script src="js/entities/Food.js"></script>
+    <script src="js/entities/Particle.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
 </body>
 </html>
-

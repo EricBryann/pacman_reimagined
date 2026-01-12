@@ -1,3 +1,11 @@
+/* ========================================
+   AGAR.IO CLONE - STYLESHEET
+   ======================================== */
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
 * {
     margin: 0;
     padding: 0;
@@ -10,6 +18,10 @@ body {
     font-family: 'Exo 2', sans-serif;
 }
 
+/* ========================================
+   GAME CONTAINER & CANVAS
+   ======================================== */
+
 #game-container {
     width: 100vw;
     height: 100vh;
@@ -21,6 +33,10 @@ body {
     background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
 }
 
+/* ========================================
+   UI OVERLAY
+   ======================================== */
+
 #ui-overlay {
     position: absolute;
     top: 0;
@@ -30,6 +46,10 @@ body {
     pointer-events: none;
     z-index: 10;
 }
+
+/* ========================================
+   SCORE DISPLAY
+   ======================================== */
 
 #score-container {
     position: absolute;
@@ -59,6 +79,10 @@ body {
     color: #fff;
     text-shadow: 0 0 20px rgba(0, 255, 200, 0.5);
 }
+
+/* ========================================
+   LEADERBOARD
+   ======================================== */
 
 #leaderboard {
     position: absolute;
@@ -112,7 +136,28 @@ body {
     letter-spacing: 2px;
 }
 
-/* Quit Button */
+.leaderboard-rank {
+    color: rgba(255, 255, 255, 0.4);
+    margin-right: 8px;
+    font-size: 11px;
+}
+
+.leaderboard-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.leaderboard-score {
+    margin-left: 15px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ========================================
+   QUIT BUTTON
+   ======================================== */
+
 #quit-btn {
     position: absolute;
     top: 20px;
@@ -142,25 +187,10 @@ body {
     display: block;
 }
 
-.leaderboard-rank {
-    color: rgba(255, 255, 255, 0.4);
-    margin-right: 8px;
-    font-size: 11px;
-}
+/* ========================================
+   START SCREEN
+   ======================================== */
 
-.leaderboard-name {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.leaderboard-score {
-    margin-left: 15px;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-/* Start Screen */
 #start-screen {
     position: absolute;
     top: 0;
@@ -212,6 +242,10 @@ body {
     margin-top: 10px;
 }
 
+/* ========================================
+   FORM ELEMENTS
+   ======================================== */
+
 #player-name {
     width: 300px;
     padding: 16px 24px;
@@ -237,6 +271,10 @@ body {
     color: rgba(255, 255, 255, 0.3);
 }
 
+/* ========================================
+   BUTTONS
+   ======================================== */
+
 #play-button, #restart-button {
     padding: 18px 60px;
     font-family: 'Orbitron', sans-serif;
@@ -261,6 +299,10 @@ body {
     transform: translateY(0) scale(0.98);
 }
 
+/* ========================================
+   INSTRUCTIONS
+   ======================================== */
+
 #instructions {
     margin-top: 50px;
     text-align: center;
@@ -273,7 +315,10 @@ body {
     letter-spacing: 1px;
 }
 
-/* Game Over Screen */
+/* ========================================
+   GAME OVER SCREEN
+   ======================================== */
+
 #game-over-screen {
     position: absolute;
     top: 0;
@@ -320,7 +365,10 @@ body {
     color: #00ffc8;
 }
 
-/* Responsive */
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+
 @media (max-width: 768px) {
     #game-title {
         font-size: 50px;
