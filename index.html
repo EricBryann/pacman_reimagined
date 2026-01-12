@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agar Clone - Single Player</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="ui-overlay">
+            <div id="score-container">
+                <div id="score-label">MASS</div>
+                <div id="score">10</div>
+            </div>
+            <div id="leaderboard">
+                <div id="leaderboard-title">LEADERBOARD</div>
+                <div id="leaderboard-list"></div>
+            </div>
+        </div>
+        
+        <div id="start-screen">
+            <div id="title-container">
+                <h1 id="game-title">AGAR</h1>
+                <div id="subtitle">SOLO EDITION</div>
+            </div>
+            <input type="text" id="player-name" placeholder="Enter your name" maxlength="15">
+            <button id="play-button">PLAY</button>
+            <div id="instructions">
+                <p>🖱️ Move mouse to control direction</p>
+                <p>🍎 Eat food and smaller cells to grow</p>
+                <p>⚠️ Avoid bigger cells or get eaten!</p>
+            </div>
+        </div>
+        
+        <div id="game-over-screen" class="hidden">
+            <h2>GAME OVER</h2>
+            <div id="final-stats">
+                <p>Final Mass: <span id="final-score">0</span></p>
+                <p>Time Survived: <span id="survival-time">0:00</span></p>
+                <p>Cells Eaten: <span id="cells-eaten">0</span></p>
+            </div>
+            <button id="restart-button">PLAY AGAIN</button>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
+
