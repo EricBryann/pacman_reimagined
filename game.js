@@ -16,6 +16,7 @@ const leaderboardList = document.getElementById('leaderboard-list');
 const finalScoreDisplay = document.getElementById('final-score');
 const survivalTimeDisplay = document.getElementById('survival-time');
 const cellsEatenDisplay = document.getElementById('cells-eaten');
+const quitBtn = document.getElementById('quit-btn');
 
 // Game Configuration
 const CONFIG = {
@@ -497,6 +498,9 @@ function initGame(playerName) {
     gameState.startTime = Date.now();
     gameState.cellsEaten = 0;
     gameState.running = true;
+    
+    // Show quit button
+    quitBtn.classList.add('visible');
 }
 
 function updateCamera() {
@@ -658,10 +662,18 @@ function drawBoundary() {
 function updateLeaderboard() {
     const allCells = [gameState.player, ...gameState.enemies]
         .filter(c => c)
-        .sort((a, b) => b.mass - a.mass)
-        .slice(0, 10);
+        .sort((a, b) => b.mass - a.mass);
 
-    leaderboardList.innerHTML = allCells.map((cell, i) => {
+    // Find player's rank
+    const playerRank = allCells.findIndex(c => c === gameState.player) + 1;
+    
+    // Get top 10
+    const top10 = allCells.slice(0, 10);
+    
+    // Check if player is in top 10
+    const playerInTop10 = top10.some(c => c === gameState.player);
+
+    let html = top10.map((cell, i) => {
         const isPlayer = cell === gameState.player;
         return `
             <div class="leaderboard-entry ${isPlayer ? 'player' : ''}">
@@ -671,6 +683,20 @@ function updateLeaderboard() {
             </div>
         `;
     }).join('');
+
+    // If player is not in top 10, show them at the bottom with their actual rank
+    if (!playerInTop10 && gameState.player) {
+        html += `
+            <div class="leaderboard-divider">···</div>
+            <div class="leaderboard-entry player">
+                <span class="leaderboard-rank">${playerRank}.</span>
+                <span class="leaderboard-name">${gameState.player.name}</span>
+                <span class="leaderboard-score">${Math.floor(gameState.player.mass)}</span>
+            </div>
+        `;
+    }
+
+    leaderboardList.innerHTML = html;
 }
 
 function gameLoop() {
@@ -743,6 +769,9 @@ function gameLoop() {
 function gameOver() {
     gameState.running = false;
     
+    // Hide quit button
+    quitBtn.classList.remove('visible');
+    
     // Calculate stats
     const survivalSeconds = Math.floor((Date.now() - gameState.startTime) / 1000);
     const minutes = Math.floor(survivalSeconds / 60);
@@ -785,6 +814,14 @@ restartButton.addEventListener('click', startGame);
 
 playerNameInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') startGame();
+});
+
+quitBtn.addEventListener('click', () => {
+    if (confirm('Are you sure you want to quit?')) {
+        gameState.running = false;
+        quitBtn.classList.remove('visible');
+        startScreen.style.display = 'flex';
+    }
 });
 
 // ========================================

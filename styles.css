@@ -104,6 +104,44 @@ body {
     font-weight: 600;
 }
 
+.leaderboard-divider {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
+    padding: 4px 0;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+/* Quit Button */
+#quit-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(255, 71, 87, 0.8);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    backdrop-filter: blur(10px);
+    display: none;
+}
+
+#quit-btn:hover {
+    background: rgba(255, 71, 87, 1);
+    transform: scale(1.05);
+}
+
+#quit-btn.visible {
+    display: block;
+}
+
 .leaderboard-rank {
     color: rgba(255, 255, 255, 0.4);
     margin-right: 8px;
