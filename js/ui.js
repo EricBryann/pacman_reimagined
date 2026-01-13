@@ -16,6 +16,7 @@ const finalScoreDisplay = document.getElementById('final-score');
 const survivalTimeDisplay = document.getElementById('survival-time');
 const cellsEatenDisplay = document.getElementById('cells-eaten');
 const quitBtn = document.getElementById('quit-btn');
+const quitToMenuBtn = document.getElementById('quit-to-menu-button');
 
 // ========================================
 // GAME START/RESTART
@@ -66,13 +67,20 @@ playerNameInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') startGame();
 });
 
-// Quit button
+// Quit button (during gameplay)
 quitBtn.addEventListener('click', () => {
     if (confirm('Are you sure you want to quit?')) {
         gameState.running = false;
         quitBtn.classList.remove('visible');
         startScreen.style.display = 'flex';
     }
+});
+
+// Quit to menu button (on game over screen)
+quitToMenuBtn.addEventListener('click', () => {
+    gameOverScreen.classList.add('hidden');
+    startScreen.style.display = 'flex';
+    playerNameInput.focus();
 });
 
 // Mouse movement
