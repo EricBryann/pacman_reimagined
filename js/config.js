@@ -12,6 +12,7 @@ const CONFIG = {
     // Entity counts
     FOOD_COUNT: 250,
     ENEMY_COUNT: 20,
+    POWER_FOOD_COUNT: 3,
 
     // Player settings
     PLAYER_START_MASS: 10,
@@ -22,6 +23,7 @@ const CONFIG = {
     SPEED_FACTOR: 0.0025,
     MASS_DECAY_RATE: 0.0001,
     EAT_OVERLAP: 0.5,
+    FREEZE_DURATION: 5000,  // 5 seconds freeze duration
 
     // Visual settings
     ZOOM_FACTOR: 0.04,

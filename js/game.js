@@ -12,11 +12,13 @@ const gameState = {
     player: null,
     enemies: [],
     food: [],
+    powerFood: [],
     particles: [],
     camera: { x: 0, y: 0, zoom: 1 },
     mouse: { x: 0, y: 0 },
     startTime: 0,
     cellsEaten: 0,
+    freezeEndTime: 0,  // When freeze effect ends
 };
 
 // ========================================
@@ -28,6 +30,18 @@ function spawnFood() {
         Math.random() * CONFIG.WORLD_WIDTH,
         Math.random() * CONFIG.WORLD_HEIGHT
     );
+}
+
+function spawnPowerFood() {
+    return new PowerFood(
+        100 + Math.random() * (CONFIG.WORLD_WIDTH - 200),
+        100 + Math.random() * (CONFIG.WORLD_HEIGHT - 200),
+        'freeze'
+    );
+}
+
+function isFrozen() {
+    return Date.now() < gameState.freezeEndTime;
 }
 
 function spawnEnemy() {
@@ -48,6 +62,12 @@ function initGame(playerName) {
     gameState.food = [];
     for (let i = 0; i < CONFIG.FOOD_COUNT; i++) {
         gameState.food.push(spawnFood());
+    }
+
+    // Initialize power food
+    gameState.powerFood = [];
+    for (let i = 0; i < CONFIG.POWER_FOOD_COUNT; i++) {
+        gameState.powerFood.push(spawnPowerFood());
     }
 
     // Initialize enemies
@@ -71,6 +91,7 @@ function initGame(playerName) {
     gameState.camera = { x: gameState.player.x, y: gameState.player.y, zoom: 1 };
     gameState.startTime = Date.now();
     gameState.cellsEaten = 0;
+    gameState.freezeEndTime = 0;
     gameState.running = true;
     
     // Show quit button
@@ -105,6 +126,32 @@ function handlePlayerInput() {
 
 function checkCollisions() {
     const player = gameState.player;
+    const frozen = isFrozen();
+
+    // Player eating power food
+    for (let i = gameState.powerFood.length - 1; i >= 0; i--) {
+        const pf = gameState.powerFood[i];
+        const dist = getDistance(player.x, player.y, pf.x, pf.y);
+
+        if (dist < player.radius + pf.radius) {
+            player.mass += pf.mass;
+            
+            // Activate freeze power-up
+            if (pf.type === 'freeze') {
+                gameState.freezeEndTime = Date.now() + CONFIG.FREEZE_DURATION;
+                createParticles(pf.x, pf.y, '#00d4ff', 20);
+            }
+            
+            gameState.powerFood.splice(i, 1);
+            
+            // Respawn power food after delay
+            setTimeout(() => {
+                if (gameState.running) {
+                    gameState.powerFood.push(spawnPowerFood());
+                }
+            }, 15000);  // 15 seconds respawn time
+        }
+    }
 
     // Player eating food
     for (let i = gameState.food.length - 1; i >= 0; i--) {
@@ -119,16 +166,18 @@ function checkCollisions() {
         }
     }
 
-    // Enemies eating food
-    for (const enemy of gameState.enemies) {
-        for (let i = gameState.food.length - 1; i >= 0; i--) {
-            const food = gameState.food[i];
-            const dist = getDistance(enemy.x, enemy.y, food.x, food.y);
+    // Enemies eating food (only if not frozen)
+    if (!frozen) {
+        for (const enemy of gameState.enemies) {
+            for (let i = gameState.food.length - 1; i >= 0; i--) {
+                const food = gameState.food[i];
+                const dist = getDistance(enemy.x, enemy.y, food.x, food.y);
 
-            if (dist < enemy.radius) {
-                enemy.mass += food.mass;
-                gameState.food.splice(i, 1);
-                gameState.food.push(spawnFood());
+                if (dist < enemy.radius) {
+                    enemy.mass += food.mass;
+                    gameState.food.splice(i, 1);
+                    gameState.food.push(spawnFood());
+                }
             }
         }
     }
@@ -232,6 +281,32 @@ function drawBoundary() {
     }
 }
 
+function drawFreezeOverlay() {
+    // Screen edge frost effect
+    const gradient = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) * 0.3,
+        canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) * 0.8
+    );
+    gradient.addColorStop(0, 'transparent');
+    gradient.addColorStop(0.7, 'rgba(0, 180, 255, 0.05)');
+    gradient.addColorStop(1, 'rgba(0, 200, 255, 0.15)');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Freeze timer indicator
+    const remainingTime = Math.max(0, gameState.freezeEndTime - Date.now());
+    const seconds = Math.ceil(remainingTime / 1000);
+    
+    ctx.font = 'bold 24px Orbitron, sans-serif';
+    ctx.fillStyle = '#00d4ff';
+    ctx.textAlign = 'center';
+    ctx.shadowColor = 'rgba(0, 212, 255, 0.8)';
+    ctx.shadowBlur = 10;
+    ctx.fillText(`❄ FROZEN: ${seconds}s ❄`, canvas.width / 2, 100);
+    ctx.shadowBlur = 0;
+}
+
 // ========================================
 // LEADERBOARD
 // ========================================
@@ -299,10 +374,13 @@ function gameLoop() {
     drawGrid();
     drawBoundary();
 
-    // Update AI
+    // Update AI (only if not frozen)
+    const frozen = isFrozen();
     for (const enemy of gameState.enemies) {
-        enemy.think(gameState.player, gameState.enemies, gameState.food);
-        enemy.update();
+        if (!frozen) {
+            enemy.think(gameState.player, gameState.enemies, gameState.food);
+            enemy.update();
+        }
         
         if (enemy.mass > 20) {
             enemy.mass -= enemy.mass * CONFIG.MASS_DECAY_RATE;
@@ -317,13 +395,23 @@ function gameLoop() {
         food.draw(ctx, gameState.camera);
     }
 
+    // Draw power food
+    for (const pf of gameState.powerFood) {
+        pf.draw(ctx, gameState.camera);
+    }
+
     // Draw cells (sorted by size, smaller on top)
     const allCells = [...gameState.enemies, gameState.player]
         .filter(c => c)
         .sort((a, b) => a.mass - b.mass);
     
     for (const cell of allCells) {
-        cell.draw(ctx, gameState.camera);
+        cell.draw(ctx, gameState.camera, frozen && cell !== gameState.player);
+    }
+
+    // Draw freeze overlay effect
+    if (frozen) {
+        drawFreezeOverlay();
     }
 
     // Update and draw particles

@@ -52,7 +52,7 @@ class Cell {
         return dist < this.radius - other.radius * CONFIG.EAT_OVERLAP;
     }
 
-    draw(ctx, camera) {
+    draw(ctx, camera, frozen = false) {
         const screenX = (this.x - camera.x) * camera.zoom + canvas.width / 2;
         const screenY = (this.y - camera.y) * camera.zoom + canvas.height / 2;
         const screenRadius = this.radius * camera.zoom;
@@ -63,13 +63,17 @@ class Cell {
             return;
         }
 
+        // Frozen color override
+        const mainColor = frozen ? '#88ccff' : this.color.main;
+        const glowColor = frozen ? 'rgba(136, 204, 255, 0.5)' : this.color.glow;
+
         // Outer glow
         const gradient = ctx.createRadialGradient(
             screenX, screenY, screenRadius * 0.5,
             screenX, screenY, screenRadius * 1.3
         );
         gradient.addColorStop(0, 'transparent');
-        gradient.addColorStop(0.7, this.color.glow);
+        gradient.addColorStop(0.7, glowColor);
         gradient.addColorStop(1, 'transparent');
         
         ctx.beginPath();
@@ -82,19 +86,40 @@ class Cell {
             screenX - screenRadius * 0.3, screenY - screenRadius * 0.3, 0,
             screenX, screenY, screenRadius
         );
-        bodyGradient.addColorStop(0, lightenColor(this.color.main, 40));
-        bodyGradient.addColorStop(0.5, this.color.main);
-        bodyGradient.addColorStop(1, darkenColor(this.color.main, 20));
+        bodyGradient.addColorStop(0, frozen ? '#ffffff' : lightenColor(this.color.main, 40));
+        bodyGradient.addColorStop(0.5, mainColor);
+        bodyGradient.addColorStop(1, frozen ? '#4488bb' : darkenColor(this.color.main, 20));
 
         ctx.beginPath();
         ctx.arc(screenX, screenY, screenRadius, 0, Math.PI * 2);
         ctx.fillStyle = bodyGradient;
         ctx.fill();
 
-        // Subtle border
-        ctx.strokeStyle = darkenColor(this.color.main, 30);
+        // Subtle border (icy border when frozen)
+        ctx.strokeStyle = frozen ? '#aaddff' : darkenColor(this.color.main, 30);
         ctx.lineWidth = Math.max(2, screenRadius * 0.05);
         ctx.stroke();
+
+        // Ice crystals effect when frozen
+        if (frozen && screenRadius > 20) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const innerR = screenRadius * 0.3;
+                const outerR = screenRadius * 0.7;
+                ctx.beginPath();
+                ctx.moveTo(
+                    screenX + Math.cos(angle) * innerR,
+                    screenY + Math.sin(angle) * innerR
+                );
+                ctx.lineTo(
+                    screenX + Math.cos(angle) * outerR,
+                    screenY + Math.sin(angle) * outerR
+                );
+                ctx.stroke();
+            }
+        }
 
         // Name label
         if (screenRadius > 15) {
