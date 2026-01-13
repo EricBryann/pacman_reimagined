@@ -5,6 +5,8 @@
 // UI Element References
 const startScreen = document.getElementById('start-screen');
 const gameOverScreen = document.getElementById('game-over-screen');
+const countdownOverlay = document.getElementById('countdown-overlay');
+const countdownNumber = document.getElementById('countdown-number');
 const playButton = document.getElementById('play-button');
 const restartButton = document.getElementById('restart-button');
 const playerNameInput = document.getElementById('player-name');
@@ -19,12 +21,36 @@ const quitBtn = document.getElementById('quit-btn');
 // GAME START/RESTART
 // ========================================
 
-function startGame() {
-    const name = playerNameInput.value.trim() || 'Player';
+function startCountdown(callback) {
     startScreen.style.display = 'none';
     gameOverScreen.classList.add('hidden');
-    initGame(name);
-    gameLoop();
+    countdownOverlay.classList.remove('hidden');
+    
+    let count = 3;
+    countdownNumber.textContent = count;
+    countdownNumber.classList.remove('go');
+    
+    const countdownInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+            countdownNumber.textContent = count;
+        } else if (count === 0) {
+            countdownNumber.textContent = 'GO!';
+            countdownNumber.classList.add('go');
+        } else {
+            clearInterval(countdownInterval);
+            countdownOverlay.classList.add('hidden');
+            callback();
+        }
+    }, 1000);
+}
+
+function startGame() {
+    const name = playerNameInput.value.trim() || 'Player';
+    startCountdown(() => {
+        initGame(name);
+        gameLoop();
+    });
 }
 
 // ========================================
