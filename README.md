@@ -6,18 +6,28 @@ A single-player Agar.io clone with AI enemies built with vanilla HTML, CSS, and 
 
 ## 🎮 How to Play
 
-1. Open `index.html` in any modern web browser
-2. Enter your name and click PLAY
-3. Move your mouse to control your cell
-4. Eat food (small colored dots) to grow
-5. Eat cells smaller than you to grow faster
+### Quick Start
+```bash
+npm install
+npm run dev
+```
+
+This will open the game in your browser at `http://localhost:3000` with hot reload enabled.
+
+### Controls
+1. Enter your name and click PLAY
+2. Move your mouse to control your cell
+3. Eat food (small colored dots) to grow
+4. Eat cells smaller than you to grow faster
+5. Grab ❄️ freeze power-ups to stop all enemies!
 6. Avoid cells larger than you - or get eaten!
 
 ## 📁 Project Structure
 
 ```
 agar/
-├── index.html              # Main HTML file - open this to play
+├── index.html              # Main HTML file
+├── package.json            # NPM scripts and dependencies
 ├── README.md               # This file
 ├── css/
 │   └── styles.css          # All game styles
@@ -30,6 +40,7 @@ agar/
 │       ├── Cell.js         # Base cell class
 │       ├── AICell.js       # AI-controlled cell
 │       ├── Food.js         # Food pellet class
+│       ├── PowerFood.js    # Power-up items (freeze, etc.)
 │       └── Particle.js     # Visual effects
 └── assets/                 # For images, sounds, etc.
 ```
@@ -159,19 +170,32 @@ The game includes basic touch support. Move your finger on the screen to control
 
 ## 🛠️ Development
 
-No build tools required! Just edit the files and refresh your browser.
+### Prerequisites
+- Node.js (v14 or higher)
+- npm
 
-For live reloading during development, you can use any simple HTTP server:
+### Getting Started
 
 ```bash
-# Python 3
-python -m http.server 8000
+# Install dependencies
+npm install
 
-# Node.js (npx)
-npx serve
-
-# Then open http://localhost:8000
+# Start development server with hot reload
+npm run dev
 ```
+
+The game will open automatically at `http://localhost:3000`. Any changes you make to HTML, CSS, or JavaScript files will automatically refresh the browser.
+
+### Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server with hot reload |
+| `npm run start` | Start server without file watching |
+
+### Alternative (No npm)
+
+You can also just open `index.html` directly in your browser, but you'll need to manually refresh after making changes.
 
 ## 📄 License
 
