@@ -20,7 +20,7 @@ const CONFIG = {
 
     // Gameplay mechanics
     FOOD_MASS: 1,
-    SPEED_FACTOR: 0.0025,
+    SPEED_FACTOR: 0.005,
     MASS_DECAY_RATE: 0.0001,
     EAT_OVERLAP: 0.5,
     FREEZE_DURATION: 5000,  // 5 seconds freeze duration
@@ -65,5 +65,5 @@ const FOOD_COLORS = [
 ];
 
 // Player color (special)
-const PLAYER_COLOR = { main: '#00ffc8', glow: 'rgba(0, 255, 200, 0.5)' };
+const PLAYER_COLOR = { main: '#ffdd00', glow: 'rgba(255, 221, 0, 0.5)' };
 
