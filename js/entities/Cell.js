@@ -21,7 +21,8 @@ class Cell {
     }
 
     get speed() {
-        return Math.max(1, 50 / Math.sqrt(this.mass)) * CONFIG.SPEED_FACTOR;
+        // Constant speed regardless of mass
+        return 5 * CONFIG.SPEED_FACTOR * 5; 
     }
 
     update() {
