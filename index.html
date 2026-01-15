@@ -65,6 +65,19 @@
                 <p>Time Survived: <span id="survival-time">0:00</span></p>
                 <p>Cells Eaten: <span id="cells-eaten">0</span></p>
             </div>
+            
+            <!-- Feedback Window -->
+            <div id="feedback-window">
+                <div id="feedback-header">
+                    <span id="feedback-icon">💡</span>
+                    <h3>Performance Insights</h3>
+                </div>
+                <div id="feedback-recommendations"></div>
+                <div id="feedback-history">
+                    <div id="history-stats"></div>
+                </div>
+            </div>
+            
             <div id="game-over-buttons">
                 <button id="restart-button">PLAY AGAIN</button>
                 <button id="quit-to-menu-button">QUIT</button>
@@ -74,6 +87,7 @@
 
     <!-- Game Scripts (load in order) -->
     <script src="js/config.js"></script>
+    <script src="js/analytics.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/entities/Cell.js"></script>
     <script src="js/entities/AICell.js"></script>

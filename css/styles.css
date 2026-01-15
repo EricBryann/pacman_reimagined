@@ -14,7 +14,7 @@
 
 body {
     overflow: hidden;
-    background: #0a0a12;
+    background: #ffffff !important;
     font-family: 'Exo 2', sans-serif;
 }
 
@@ -30,7 +30,7 @@ body {
 
 #gameCanvas {
     display: block;
-    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+    background: #ffffff !important;
 }
 
 /* ========================================
@@ -201,7 +201,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(ellipse at center, rgba(13, 17, 23, 0.95) 0%, rgba(10, 10, 18, 0.98) 100%);
+    background: #ffffff !important;
     z-index: 100;
     animation: fadeIn 0.5s ease-out;
 }
@@ -237,7 +237,7 @@ body {
 #subtitle {
     font-family: 'Orbitron', sans-serif;
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(0, 0, 0, 0.5);
     letter-spacing: 12px;
     margin-top: 10px;
 }
@@ -251,10 +251,10 @@ body {
     padding: 16px 24px;
     font-family: 'Exo 2', sans-serif;
     font-size: 18px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.05);
+    border: 2px solid rgba(0, 0, 0, 0.15);
     border-radius: 50px;
-    color: #fff;
+    color: #333;
     text-align: center;
     outline: none;
     transition: all 0.3s ease;
@@ -268,7 +268,7 @@ body {
 }
 
 #player-name::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(0, 0, 0, 0.4);
 }
 
 /* ========================================
@@ -309,7 +309,7 @@ body {
 }
 
 #instructions p {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 0, 0, 0.6);
     font-size: 14px;
     margin: 10px 0;
     letter-spacing: 1px;
@@ -328,7 +328,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(ellipse at center, rgba(13, 17, 23, 0.9) 0%, rgba(10, 10, 18, 0.95) 100%);
+    background: #ffffff !important;
     z-index: 150;
 }
 
@@ -382,7 +382,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(ellipse at center, rgba(13, 17, 23, 0.95) 0%, rgba(10, 10, 18, 0.98) 100%);
+    background: #ffffff !important;
     z-index: 100;
     animation: fadeIn 0.5s ease-out;
 }
@@ -395,10 +395,10 @@ body {
     font-family: 'Orbitron', sans-serif;
     font-size: 60px;
     font-weight: 900;
-    color: #ff4757;
+    color: #e74c3c;
     letter-spacing: 8px;
     margin-bottom: 40px;
-    text-shadow: 0 0 40px rgba(255, 71, 87, 0.5);
+    text-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
 }
 
 #final-stats {
@@ -408,7 +408,7 @@ body {
 
 #final-stats p {
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(0, 0, 0, 0.7);
     margin: 12px 0;
 }
 
@@ -417,6 +417,140 @@ body {
     font-weight: 700;
     color: #00ffc8;
 }
+
+/* ========================================
+   FEEDBACK WINDOW
+   ======================================== */
+
+#feedback-window {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 20px 25px;
+    margin: 25px 0;
+    max-width: 500px;
+    width: 90%;
+    backdrop-filter: blur(10px);
+}
+
+#feedback-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#feedback-icon {
+    font-size: 28px;
+}
+
+#feedback-header h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+#feedback-recommendations {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.recommendation-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    border-left: 4px solid #00ffc8;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommendation-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.recommendation-card.priority-1 {
+    border-left-color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.recommendation-card.priority-2 {
+    border-left-color: #feca57;
+    background: rgba(254, 202, 87, 0.1);
+}
+
+.recommendation-card.priority-3 {
+    border-left-color: #00ffc8;
+    background: rgba(0, 255, 200, 0.1);
+}
+
+.recommendation-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.recommendation-content {
+    flex: 1;
+}
+
+.recommendation-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.recommendation-message {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+}
+
+#feedback-history {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#history-stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.history-stat {
+    text-align: center;
+    padding: 8px 15px;
+}
+
+.history-stat-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #00b894;
+}
+
+.history-stat-label {
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+}
+
+/* ========================================
+   GAME OVER BUTTONS
+   ======================================== */
 
 #game-over-buttons {
     display: flex;
