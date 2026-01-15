@@ -94,6 +94,9 @@ function initGame(playerName) {
     gameState.freezeEndTime = 0;
     gameState.running = true;
     
+    // Start analytics session
+    PlayerAnalytics.startSession();
+    
     // Show quit button
     quitBtn.classList.add('visible');
 }
@@ -142,6 +145,7 @@ function checkCollisions() {
                 createParticles(pf.x, pf.y, '#00d4ff', 20);
             }
             
+            PlayerAnalytics.trackPowerUp();
             gameState.powerFood.splice(i, 1);
             
             // Respawn power food after delay
@@ -163,6 +167,7 @@ function checkCollisions() {
             createParticles(food.x, food.y, food.color, 5);
             gameState.food.splice(i, 1);
             gameState.food.push(spawnFood());
+            PlayerAnalytics.trackFoodEaten();
         }
     }
 
@@ -187,6 +192,7 @@ function checkCollisions() {
         const enemy = gameState.enemies[i];
 
         if (player.canEat(enemy)) {
+            PlayerAnalytics.trackCellEaten(player.mass, enemy.mass);
             player.mass += enemy.mass * 0.8;
             createParticles(enemy.x, enemy.y, enemy.color.main, 15);
             gameState.enemies.splice(i, 1);
@@ -198,9 +204,20 @@ function checkCollisions() {
                 }
             }, 2000);
         } else if (enemy.canEat(player)) {
+            // Track close call if enemy was close
+            const dist = getDistance(player.x, player.y, enemy.x, enemy.y);
+            if (dist < enemy.radius * 1.5) {
+                PlayerAnalytics.trackCloseCall();
+            }
             createParticles(player.x, player.y, player.color.main, 20);
             gameOver();
             return;
+        } else if (enemy.mass > player.mass) {
+            // Track close calls with larger enemies
+            const dist = getDistance(player.x, player.y, enemy.x, enemy.y);
+            if (dist < enemy.radius * 2) {
+                PlayerAnalytics.trackCloseCall();
+            }
         }
     }
 
@@ -353,7 +370,7 @@ function gameLoop() {
     if (!gameState.running) return;
 
     // Clear canvas
-    ctx.fillStyle = '#0d1117';
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Handle input
@@ -361,6 +378,10 @@ function gameLoop() {
 
     // Update player
     gameState.player.update();
+
+    // Track analytics
+    PlayerAnalytics.updateMaxMass(gameState.player.mass);
+    PlayerAnalytics.trackPosition(gameState.player.x, gameState.player.y);
 
     // Mass decay for larger cells
     if (gameState.player.mass > 20) {
@@ -444,7 +465,69 @@ function gameOver() {
     survivalTimeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
     cellsEatenDisplay.textContent = gameState.cellsEaten;
 
+    // Save analytics and display feedback
+    PlayerAnalytics.saveSession();
+    displayFeedback();
+
     gameOverScreen.classList.remove('hidden');
+}
+
+function displayFeedback() {
+    const recommendations = PlayerAnalytics.generateRecommendations();
+    const feedbackContainer = document.getElementById('feedback-recommendations');
+    const historyContainer = document.getElementById('history-stats');
+    
+    // Display recommendations
+    if (recommendations.length > 0) {
+        feedbackContainer.innerHTML = recommendations.map(rec => `
+            <div class="recommendation-card priority-${rec.priority}">
+                <span class="recommendation-icon">${rec.icon}</span>
+                <div class="recommendation-content">
+                    <div class="recommendation-title">${rec.title}</div>
+                    <div class="recommendation-message">${rec.message}</div>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        feedbackContainer.innerHTML = `
+            <div class="recommendation-card priority-3">
+                <span class="recommendation-icon">🎮</span>
+                <div class="recommendation-content">
+                    <div class="recommendation-title">Keep Playing!</div>
+                    <div class="recommendation-message">Play a few more games to get personalized recommendations.</div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Display historical stats
+    const stats = PlayerAnalytics.getSummaryStats();
+    if (stats) {
+        historyContainer.innerHTML = `
+            <div class="history-stat">
+                <div class="history-stat-value">${stats.totalGames}</div>
+                <div class="history-stat-label">Games Played</div>
+            </div>
+            <div class="history-stat">
+                <div class="history-stat-value">${stats.avgSurvivalTime}s</div>
+                <div class="history-stat-label">Avg Survival</div>
+            </div>
+            <div class="history-stat">
+                <div class="history-stat-value">${stats.bestMass}</div>
+                <div class="history-stat-label">Best Mass</div>
+            </div>
+            <div class="history-stat">
+                <div class="history-stat-value">${stats.totalCellsEaten}</div>
+                <div class="history-stat-label">Total Kills</div>
+            </div>
+        `;
+    } else {
+        historyContainer.innerHTML = `
+            <p style="color: #666; font-size: 12px; text-align: center;">
+                Your stats will appear here after more games.
+            </p>
+        `;
+    }
 }
 
 // ========================================
@@ -458,4 +541,8 @@ function resizeCanvas() {
 
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
+
+// Initialize canvas with white background
+ctx.fillStyle = '#ffffff';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 
