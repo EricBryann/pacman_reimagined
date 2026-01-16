@@ -48,10 +48,14 @@ function startCountdown(callback) {
 
 function startGame() {
     const name = playerNameInput.value.trim() || 'Player';
-    startCountdown(() => {
-        initGame(name);
-        gameLoop();
-    });
+    
+    // Hide screens directly
+    startScreen.style.display = 'none';
+    gameOverScreen.classList.add('hidden');
+    countdownOverlay.classList.add('hidden'); // Ensure hidden
+
+    initGame(name);
+    gameLoop();
 }
 
 // ========================================

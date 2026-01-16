@@ -186,8 +186,17 @@ function checkCollisions() {
     for (let i = gameState.enemies.length - 1; i >= 0; i--) {
         const enemy = gameState.enemies[i];
 
-        if (player.canEat(enemy)) {
-            player.mass += enemy.mass * 0.8;
+        // When frozen, player can eat ANY enemy regardless of size
+        // We use a simple intersection check (radius overlap) when frozen
+        const isTouching = getDistance(player.x, player.y, enemy.x, enemy.y) < player.radius + enemy.radius * 0.5;
+
+        const canEatEnemy = frozen ? 
+            isTouching : // If frozen, just touching is enough
+            player.canEat(enemy); // Otherwise, normal mass rules apply
+
+        if (canEatEnemy) {
+            // Give more mass for frozen enemies (bonus)
+            player.mass += enemy.mass * (frozen ? 1.0 : 0.8);
             createParticles(enemy.x, enemy.y, enemy.color.main, 15);
             gameState.enemies.splice(i, 1);
             gameState.cellsEaten++;
@@ -197,7 +206,8 @@ function checkCollisions() {
                     gameState.enemies.push(spawnEnemy());
                 }
             }, 2000);
-        } else if (enemy.canEat(player)) {
+        } else if (!frozen && enemy.canEat(player)) {
+            // Only die if not frozen
             createParticles(player.x, player.y, player.color.main, 20);
             gameOver();
             return;
